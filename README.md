@@ -23,7 +23,7 @@ Tento projekt je webová aplikace postavená na frameworku Flask, která slouž�
 
 1. **Klonování repozitáře**:
    ```bash
-   git clone https://github.com/vaserepozitar/covid-data-app.git
+   git clone https://github.com/vaserepozitar/covid-data-app.git](https://github.com/KoliaUS/Covid_Flask.git
    cd covid-data-app
    ```
 
