@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: #333;
+            background-color: #f8f8f7;
+            margin: 0;
+            font-size: 16px;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #000;
+            font-size: 24px;
+            text-align: center;
+            padding-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 90%;
+            margin: 0 auto;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 12px 15px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #000;
+            color: #fff;
+        }
+
+        form {
+            width: 90%;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        label {
+            margin-right: 10px;
+            color: #333;
+        }
+
+        input[type="date"], input[type="number"], button {
+            padding: 8px;
+            margin-right: 10px;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        button {
+            background-color: #000;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #333;
+        }
+
+        a {
+            color: #fff; /* Set link color to white */
+            text-decoration: none; /* Removes underline from links */
+        }
+
+        a:hover {
+            color: #ccc; /* Changes link color on hover to light gray for better visibility */
+        }
+
+        a button {
+            text-decoration: none;
+            color: #fff;
+        }
+
+        .statistics {
+            width: 90%;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        
+
+    </style>
+</head>
+<body>
+    <a href="/" class="return-button">Zpět</a>
+    <h1>Data z databáze</h1>
+
+    <div class="statistics">
+        <h2>Statistiky</h2>
+        <p>Průměrný počet případů: {{ average_cases|round(2) }}</p>
+        <p>Průměrný podíl reinfekcí: {{ average_reinfection_ratio|round(4) * 100 }}%</p>
+    </div>
+    
+    <form action="/data" method="get">
+        
+        <label for="from_date">Od data:</label>
+        <input type="date" id="from_date" name="from_date">
+        
+        <label for="to_date">Do data:</label>
+        <input type="date" id="to_date" name="to_date">
+
+        <label for="min_cases">Minimální počet případů:</label>
+        <input type="number" id="min_cases" name="min_cases" min="0">
+    
+        <label for="infaction">Minimální počet Primoinfekce:</label>
+        <input type="number" id="infaction" name="infaction" min="0">
+
+        <label for="first_reinfection">Minimální počet První Reinfekce:</label>
+        <input type="number" id="first_reinfection" name="first_reinfection" min="0">
+        
+        <label for="second_reinfection">Minimální počet Druhé Reinfekce:</label>
+        <input type="number" id="second_reinfection" name="second_reinfection" min="0">
+
+        <button type="submit">Filtrovat</button>
+        <a href="/data"><button type="button">Resetovat</button></a>
+
+        <a href="/graph">
+            <button type="button">Zobrazit Graf</button>
+        </a>
+
+        <a href="/download-data?from_date={{ request.args.get('from_date', '') }}&to_date={{ request.args.get('to_date', '') }}&min_cases={{ request.args.get('min_cases', '') }}&infaction={{ request.args.get('infaction', '') }}&first_reinfection={{ request.args.get('first_reinfection', '') }}&second_reinfection={{ request.args.get('second_reinfection', '') }}&order_by={{ request.args.get('order_by', 'id') }}&order_direction={{ request.args.get('order_direction', 'asc') }}"><button type="button">Stáhnout jako CSV</button></a>
+    </form>
+    <table>
+        <tr>
+            
+            <th><a href="/data?order_by=id&order_direction={{ 'desc' if request.args.get('order_by') == 'id' and request.args.get('order_direction', 'asc') == 'asc' else 'asc' }}&from_date={{ request.args.get('from_date', '') }}&to_date={{ request.args.get('to_date', '') }}&min_cases={{ request.args.get('min_cases', '') }}&infaction={{ request.args.get('infaction', '') }}&first_reinfection={{ request.args.get('first_reinfection', '') }}&second_reinfection={{ request.args.get('second_reinfection', '') }}">ID</a></th>
+            <th><a href="/data?order_by=tyden_od&order_direction={{ 'desc' if request.args.get('order_by') == 'tyden_od' and request.args.get('order_direction', 'asc') == 'asc' else 'asc' }}&from_date={{ request.args.get('from_date', '') }}&to_date={{ request.args.get('to_date', '') }}&min_cases={{ request.args.get('min_cases', '') }}&infaction={{ request.args.get('infaction', '') }}&first_reinfection={{ request.args.get('first_reinfection', '') }}&second_reinfection={{ request.args.get('second_reinfection', '') }}">Týden Od</a></th>
+            <th><a href="/data?order_by=tyden_do&order_direction={{ 'desc' if request.args.get('order_by') == 'tyden_do' and request.args.get('order_direction', 'asc') == 'asc' else 'asc' }}&from_date={{ request.args.get('from_date', '') }}&to_date={{ request.args.get('to_date', '') }}&min_cases={{ request.args.get('min_cases', '') }}&infaction={{ request.args.get('infaction', '') }}&first_reinfection={{ request.args.get('first_reinfection', '') }}&second_reinfection={{ request.args.get('second_reinfection', '') }}">Týden Do</a></th>
+            <th><a href="/data?order_by=tyden&order_direction={{ 'desc' if request.args.get('order_by') == 'tyden' and request.args.get('order_direction', 'asc') == 'asc' else 'asc' }}&from_date={{ request.args.get('from_date', '') }}&to_date={{ request.args.get('to_date', '') }}&min_cases={{ request.args.get('min_cases', '') }}&infaction={{ request.args.get('infaction', '') }}&first_reinfection={{ request.args.get('first_reinfection', '') }}&second_reinfection={{ request.args.get('second_reinfection', '') }}">Týden</a></th>
+            <th><a href="/data?order_by=nove_pripady_celkem&order_direction={{ 'desc' if request.args.get('order_by') == 'nove_pripady_celkem' and request.args.get('order_direction', 'asc') == 'asc' else 'asc' }}&from_date={{ request.args.get('from_date', '') }}&to_date={{ request.args.get('to_date', '') }}&min_cases={{ request.args.get('min_cases', '') }}&infaction={{ request.args.get('infaction', '') }}&first_reinfection={{ request.args.get('first_reinfection', '') }}&second_reinfection={{ request.args.get('second_reinfection', '') }}">Nové Případy Celkem</a></th>
+            <th><a href="/data?order_by=primoinfekce&order_direction={{ 'desc' if request.args.get('order_by') == 'primoinfekce' and request.args.get('order_direction', 'asc') == 'asc' else 'asc' }}&from_date={{ request.args.get('from_date', '') }}&to_date={{ request.args.get('to_date', '') }}&min_cases={{ request.args.get('min_cases', '') }}&infaction={{ request.args.get('infaction', '') }}&first_reinfection={{ request.args.get('first_reinfection', '') }}&second_reinfection={{ request.args.get('second_reinfection', '') }}">Primoinfekce</a></th>
+            <th><a href="/data?order_by=prvni_reinfekce&order_direction={{ 'desc' if request.args.get('order_by') == 'prvni_reinfekce' and request.args.get('order_direction', 'asc') == 'asc' else 'asc' }}&from_date={{ request.args.get('from_date', '') }}&to_date={{ request.args.get('to_date', '') }}&min_cases={{ request.args.get('min_cases', '') }}&infaction={{ request.args.get('infaction', '') }}&first_reinfection={{ request.args.get('first_reinfection', '') }}&second_reinfection={{ request.args.get('second_reinfection', '') }}">První Reinfekce</a></th>
+            <th><a href="/data?order_by=druhe_reinfekce&order_direction={{ 'desc' if request.args.get('order_by') == 'druhe_reinfekce' and request.args.get('order_direction', 'asc') == 'asc' else 'asc' }}&from_date={{ request.args.get('from_date', '') }}&to_date={{ request.args.get('to_date', '') }}&min_cases={{ request.args.get('min_cases', '') }}&infaction={{ request.args.get('infaction', '') }}&first_reinfection={{ request.args.get('first_reinfection', '') }}&second_reinfection={{ request.args.get('second_reinfection', '') }}">Druhé Reinfekce</a></th>
+            <th><a href="/data?order_by=treti_a_dalsi_reinfekce&order_direction={{ 'desc' if request.args.get('order_by') == 'treti_a_dalsi_reinfekce' and request.args.get('order_direction', 'asc') == 'asc' else 'asc' }}&from_date={{ request.args.get('from_date', '') }}&to_date={{ request.args.get('to_date', '') }}&min_cases={{ request.args.get('min_cases', '') }}&infaction={{ request.args.get('infaction', '') }}&first_reinfection={{ request.args.get('first_reinfection', '') }}&second_reinfection={{ request.args.get('second_reinfection', '') }}">Třetí a Další Reinfekce</a></th>
+        </tr>
+        {{ data|safe }}
+    </table>
+    
+    
+</body>
+</html>

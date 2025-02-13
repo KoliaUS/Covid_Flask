@@ -1,0 +1,7 @@
+site_name: My Docs
+nav:
+    - Home: index.md
+    - Database: database.md
+    - APP: app.md
+    - Grafana: grafana.md
+

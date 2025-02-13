@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Přidat Data</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+
+        form {
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        input[type="number"],
+        button[type="submit"] {
+            width: calc(100% - 12px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        .return-button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 5px 10px;
+            font-size: 14px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            width: auto;
+            cursor: pointer;
+        }
+
+        .return-button:hover {
+            background-color: #0056b3;
+        }
+
+        .legend {
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .legend h2 {
+            margin-top: 0;
+            font-size: 18px;
+            color: #007bff;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+
+        .legend p {
+            margin: 5px 0;
+            line-height: 1.5;
+            color: #555;
+        }
+
+        .legend p strong {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <a href="/" class="return-button">Zpět</a>
+    <h1>Přidat nový záznam</h1>
+
+    <div class="legend">
+        <h2>Legenda</h2>
+        <p><strong>Týden od:</strong> Počáteční datum týdne (YYYY-MM-DD)</p>
+        <p><strong>Týden do:</strong> Konečné datum týdne (YYYY-MM-DD)</p>
+        <p><strong>Týden:</strong> Textová reprezentace týdne ve formatu YYYY-WW</p>
+        <p><strong>Nové Případy Celkem:</strong> Celkový počet nových případů</p>
+        <p><strong>Primoinfekce:</strong> Počet prvních infekcí</p>
+        <p><strong>První Reinfekce:</strong> Počet prvních reinfekcí</p>
+        <p><strong>Druhé Reinfekce:</strong> Počet druhých reinfekcí</p>
+        <p><strong>Třetí a Další Reinfekce:</strong> Počet třetích a dalších reinfekcí</p>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <script>
+            window.onload = function() {
+                {% for category, message in messages %}
+                    alert("{{ message }}");
+                {% endfor %}
+            }
+        </script>
+    {% endif %}
+    {% endwith %}
+
+    <form action="/add" method="post">
+        <label for="tyden_od">Týden od (YYYY-MM-DD):</label>
+        <input type="date" id="tyden_od" name="tyden_od" required><br>
+
+        <label for="tyden_do">Týden do (YYYY-MM-DD):</label>
+        <input type="date" id="tyden_do" name="tyden_do" required><br>
+
+        <label for="tyden">Týden:</label>
+        <input type="text" id="tyden" name="tyden" required><br>
+
+        <label for="nove_pripady_celkem">Nové Případy Celkem:</label>
+        <input type="number" id="nove_pripady_celkem" name="nove_pripady_celkem" required><br>
+
+        <label for="primoinfekce">Primoinfekce:</label>
+        <input type="number" id="primoinfekce" name="primoinfekce" required><br>
+
+        <label for="prvni_reinfekce">První Reinfekce:</label>
+        <input type="number" id="prvni_reinfekce" name="prvni_reinfekce" required><br>
+
+        <label for="druhe_reinfekce">Druhé Reinfekce:</label>
+        <input type="number" id="druhe_reinfekce" name="druhe_reinfekce" required><br>
+
+        <label for="treti_a_dalsi_reinfekce">Třetí a Další Reinfekce:</label>
+        <input type="number" id="treti_a_dalsi_reinfekce" name="treti_a_dalsi_reinfekce" required><br>
+
+        <button type="submit">Přidat</button>
+    </form>
+</body>
+</html>

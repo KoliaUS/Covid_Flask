@@ -1,0 +1,54 @@
+version: '3.8'
+services:
+  db:
+    build: ./db
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./db/pg_hba.conf:/etc/postgresql/pg_hba.conf
+      - ./db/postgresql.conf:/etc/postgresql/postgresql.conf
+    environment:
+      - POSTGRES_DB=covid_data
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+    ports:
+      - "5432:5432"
+    networks:
+      - mynetwork
+
+  data_loader:
+    build: ./data_loader
+    ports:
+      - "5001:5000"
+    depends_on:
+      - db
+    networks:
+      - mynetwork
+
+  documentation:
+    build: ./documentation
+    ports:
+      - "8000:8000"
+    networks:
+      - mynetwork
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana_data:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    restart: always
+    depends_on:
+      - db
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge
+
+volumes:
+  db_data: {}
+  grafana_data: {}
